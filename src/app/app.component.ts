@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IONIC_IMPORTS } from './shared/ionic-imports';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   standalone: true,
-  imports: [...IONIC_IMPORTS],
+  imports: [CommonModule, IonicModule],
 })
 export class AppComponent {}

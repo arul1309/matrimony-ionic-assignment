@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IONIC_IMPORTS } from '../../shared/ionic-imports';
+import { IonicModule } from '@ionic/angular';
 import {
   Profile,
   getProfileDetailsLine,
@@ -21,7 +21,7 @@ import {
   templateUrl: './profile-card.component.html',
   styleUrl: './profile-card.component.scss',
   standalone: true,
-  imports: [CommonModule, ...IONIC_IMPORTS],
+  imports: [CommonModule, IonicModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileCardComponent {

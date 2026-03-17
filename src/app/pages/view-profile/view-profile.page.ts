@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 
 import { ProfileService } from '../../services/profile.service';
 import {
@@ -15,7 +15,6 @@ import {
   getProfileSummaryBullets,
   getProfileTags,
 } from '../../models/profile.interface';
-import { IONIC_IMPORTS } from '../../shared/ionic-imports';
 
 export interface InfoRow {
   key: string;
@@ -27,7 +26,7 @@ export interface InfoRow {
   templateUrl: './view-profile.page.html',
   styleUrls: ['./view-profile.page.scss'],
   standalone: true,
-  imports: [CommonModule, ...IONIC_IMPORTS],
+  imports: [CommonModule, IonicModule],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

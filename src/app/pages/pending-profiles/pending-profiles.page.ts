@@ -8,11 +8,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ToastController, GestureController } from '@ionic/angular';
-
+import { ToastController, GestureController, IonicModule } from '@ionic/angular';
 import { ProfileService, ProfileAction } from '../../services/profile.service';
 import { Profile } from '../../models/profile.interface';
-import { IONIC_IMPORTS } from '../../shared/ionic-imports';
 import { ProfileCardComponent } from '../../components/profile-card/profile-card.component';
 
 const SWIPE_OUT_MS = 320;
@@ -39,7 +37,7 @@ export type SwipeDirection = 'left' | 'right' | 'up';
   templateUrl: './pending-profiles.page.html',
   styleUrls: ['./pending-profiles.page.scss'],
   standalone: true,
-  imports: [CommonModule, ...IONIC_IMPORTS, ProfileCardComponent],
+  imports: [CommonModule, IonicModule, ProfileCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PendingProfilesPage implements OnInit, AfterViewInit {
