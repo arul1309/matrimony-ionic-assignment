@@ -135,9 +135,8 @@ export class PendingProfilesPage implements OnInit, AfterViewInit {
   }
 
   private nextProfile(): void {
-    if (this.index >= this.profiles.length) return;
-    this.index++;
-    this.gestureSetup = false;
+    this.loadProfiles();
+
     if (this.index < this.profiles.length) {
       this.cardJustEntered = true;
       this.cdr.markForCheck();

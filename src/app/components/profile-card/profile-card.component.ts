@@ -19,7 +19,7 @@ import {
 @Component({
   selector: 'app-profile-card',
   templateUrl: './profile-card.component.html',
-  styleUrl: './profile-card.component.scss',
+  styleUrls: ['./profile-card.component.scss'],
   standalone: true,
   imports: [CommonModule, IonicModule],
   changeDetection: ChangeDetectionStrategy.OnPush,

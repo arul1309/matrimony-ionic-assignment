@@ -16,13 +16,11 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": {
-              "base": "www",
-              "browser": ""
-            },
+            "outputPath": "www",
             "index": "src/index.html",
+            "main": "src/main.ts",
             "polyfills": [
               "src/polyfills.ts"
             ],
@@ -36,8 +34,7 @@
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
-            "scripts": [],
-            "browser": "src/main.ts"
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -53,6 +50,10 @@
                   "maximumError": "10kb"
                 }
               ],
+              "optimization": true,
+              "buildOptimizer": true,
+              "vendorChunk": false,
+              "extractLicenses": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -63,7 +64,9 @@
             },
             "development": {
               "optimization": false,
+              "buildOptimizer": false,
               "extractLicenses": false,
+              "vendorChunk": true,
               "sourceMap": true,
               "namedChunks": true
             },
