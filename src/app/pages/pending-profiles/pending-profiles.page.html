@@ -1,45 +1,40 @@
-<ion-header class="pending-header">
+<ion-header class="pending-header" mode="ios">
   <ion-toolbar class="main-toolbar">
-    <ion-title class="header-brand">{{ appName }}</ion-title>
-  </ion-toolbar>
-  <ion-toolbar class="sub-header">
-    <ion-title class="pending-title">
-      <span class="pending-line">
-        <ion-text class="pending-section"><ion-label>My Matches</ion-label></ion-text>
-        <ion-text class="pending-text"><ion-label>{{ pendingCount }} profiles pending with me</ion-label></ion-text>
+    <ion-buttons slot="start">
+      <ion-menu-button menu="main-menu" color="light"></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="header-title-stack" size="small">
+      <div class="header-brand">{{ appName }}</div>
+      <div class="pending-line">
+        <span class="pending-text">{{ pendingCount }} Profiles pending with me</span>
         <ion-badge class="new-badge" *ngIf="newCount > 0">{{ newCount }} NEW</ion-badge>
-      </span>
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="pending-content no-scroll" [fullscreen]="true" [scrollY]="false">
-  <div class="stack-viewport" *ngIf="hasCurrentProfile">
-    <div class="stack-container">
-      <div
-        *ngFor="let peek of peekCards"
-        class="stack-layer stack-back"
-        [ngClass]="'stack-back-' + peek.side">
-        <ion-card class="stack-peek-card">
-          <ion-img [src]="peek.profile.image" alt=""></ion-img>
-          <ion-card-content class="peek-name-wrap">
-            <ion-text class="peek-name"><ion-label>{{ peek.profile.name }}</ion-label></ion-text>
-          </ion-card-content>
-        </ion-card>
-      </div>
-      <div class="stack-layer stack-front" [ngClass]="frontCardClasses">
-        <ion-card class="stack-card-wrap">
-          <app-profile-card
-            #profileCardRef
-            [profile]="profiles[index]"
-            (like)="interested()"
-            (reject)="reject()"
-            (shortlist)="shortlist()"
-            (open)="openProfile()">
-          </app-profile-card>
-        </ion-card>
+  <div class="list-viewport-wrap" *ngIf="hasCurrentProfile">
+    <ion-button class="list-nav-btn list-nav-btn-prev" fill="clear" (click)="scrollList('left')"
+      [disabled]="!canScrollPrev" aria-label="Scroll profiles left">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
+
+    <div #listViewport class="list-viewport" (scroll)="onListScroll()">
+      <div class="list-row">
+        <div *ngFor="let p of visibleProfiles; let i = index" class="list-col">
+          <div class="list-card-wrap" [class.front-wrap]="i === 0">
+            <app-profile-card [profile]="p" (reject)="reject(p)" (open)="openProfile(p)"
+              (photoSwipe)="onPhotoSwipe($event, i)"></app-profile-card>
+          </div>
+        </div>
       </div>
     </div>
+
+    <ion-button class="list-nav-btn list-nav-btn-next" fill="clear" (click)="scrollList('right')"
+      [disabled]="!canScrollNext" aria-label="Scroll profiles right">
+      <ion-icon name="chevron-forward-outline"></ion-icon>
+    </ion-button>
   </div>
 
   <div class="empty-state-wrap" *ngIf="!hasCurrentProfile">

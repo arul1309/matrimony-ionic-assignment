@@ -17,5 +17,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/view-profile/view-profile.page')
       .then(m => m.ViewProfilePage)
+  },
+  {
+    path: 'daily-recommendations',
+    loadComponent: () =>
+      import('./pages/daily-recommendations/daily-recommendations.page')
+      .then(m => m.DailyRecommendationsPage)
   }
 ];

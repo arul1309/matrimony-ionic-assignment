@@ -1,64 +1,55 @@
-// Variables
 $color-bg: #fff;
 $color-text: #0f172a;
-$color-text-secondary: #1e293b;
 $color-muted: #64748b;
 $color-border: #e2e8f0;
-$color-tag-bg: #e2e8f0;
-$color-tag-text: #334155;
 $color-primary: #f97316;
 $breakpoint-sm: 480px;
 $breakpoint-md: 768px;
-$action-bar-height: 52px;
-$action-bar-height-sm: 44px;
-$btn-size: 42px;
-$btn-size-sm: 38px;
-$btn-icon-size: 22px;
-$btn-icon-size-sm: 18px;
 
 .profile-card {
   width: 100%;
   max-width: 100%;
-  margin: 0 auto;
-  border-radius: 28px;
+  margin: 0;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   background: $color-bg;
-  min-height: 552px;
+  min-height: 320px;
   display: flex;
   flex-direction: column;
+  cursor: default;
 
   @media (min-width: $breakpoint-md) {
     max-width: 400px;
-    min-height: 592px;
+    min-height: 360px;
   }
 }
 
 .profile-image {
   width: 100%;
-  height: 380px;
-  min-height: 380px;
+  height: 220px;
+  min-height: 220px;
   flex-shrink: 0;
   cursor: pointer;
   display: block;
 
   &::part(image) {
     object-fit: cover;
-    object-position: center center;
+    object-position: center 22%;
   }
 
   @media (min-width: $breakpoint-md) {
-    height: 420px;
-    min-height: 420px;
+    height: 250px;
+    min-height: 250px;
   }
 }
 
 .profile-card-content {
-  padding: 24px 14px 28px;
+  padding: 16px 16px 18px;
   background: $color-bg;
   overflow: hidden;
   flex: 0 0 auto;
-  min-height: 172px;
+  min-height: 158px;
   display: flex;
   flex-direction: column;
 
@@ -66,6 +57,10 @@ $btn-icon-size-sm: 18px;
     padding: 16px 12px 20px;
     min-height: 160px;
   }
+}
+
+.micro-badges {
+  display: none;
 }
 
 .profile-name {
@@ -76,7 +71,7 @@ $btn-icon-size-sm: 18px;
   text-overflow: ellipsis;
 
   ion-label {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
     color: $color-text;
     letter-spacing: -0.03em;
@@ -87,41 +82,29 @@ $btn-icon-size-sm: 18px;
     margin-bottom: 4px;
 
     ion-label {
-      font-size: 20px;
+      font-size: 17px;
     }
   }
 }
 
-.profile-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.profile-tag-pill {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 12px;
-  white-space: nowrap;
-  --background: #{$color-tag-bg};
-  --color: #{$color-tag-text};
-}
-
 .profile-details {
   display: block;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   flex-shrink: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-overflow: clip;
+  white-space: normal;
 
   ion-label {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    color: $color-muted;
-    line-height: 1.55;
+    color: $color-text;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-clamp: 3;
   }
 
   @media (max-width: $breakpoint-sm) {
@@ -133,169 +116,99 @@ $btn-icon-size-sm: 18px;
   }
 }
 
-.action-bar {
-  --background: transparent;
-  --border-width: 0;
-  --min-height: #{$action-bar-height};
-  --padding-top: 0;
-  --padding-bottom: 0;
-  --padding-start: 0;
-  --padding-end: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 0;
-  margin: 0;
-  min-height: $action-bar-height;
-  flex-wrap: nowrap;
-  min-width: 0;
-  flex-shrink: 0;
-  margin-top: auto;
 
-  @media (max-width: $breakpoint-sm) {
-    gap: 6px;
-    min-height: $action-bar-height-sm;
-    --min-height: #{$action-bar-height-sm};
+.btn-yes-pill {
+  width: 60px;
+  height: 30px;
+  margin-left: 0;
+  --border-radius: 18px;
+  --background: #f97316;
+  --color: #ffffff;
+  --box-shadow: none;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: none;
+}
+
+.btn-no-pill {
+  width: 60px;
+  height: 30px;
+  --border-radius: 18px;
+  --background: #ffffff;
+  --color: #9ca3af;
+  --border-width: 2px;
+  --border-color: #d1d5db;
+  --box-shadow: none;
+  --border-style: solid;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: none;
+}
+
+@media (min-width: $breakpoint-md) {
+  .yesno-grid {
+    display: flex;
   }
 }
 
-.action-bar .btn-shortlist,
-.action-bar .btn-view,
-.action-bar .btn-reject {
-  --background: #{$color-bg};
-  --color: #{$color-muted};
-  --border-width: 2px;
-  --border-color: #{$color-border};
-  --border-radius: 50%;
-  --padding-start: 0;
-  --padding-end: 0;
-  --padding-top: 0;
-  --padding-bottom: 0;
-  --box-shadow: none;
-  width: $btn-size;
-  height: $btn-size;
-  min-width: $btn-size;
-  min-height: $btn-size;
-  margin: 0;
-
-  @media (max-width: $breakpoint-sm) {
-    width: $btn-size-sm;
-    height: $btn-size-sm;
-    min-width: $btn-size-sm;
-    min-height: $btn-size-sm;
+@media (max-width: $breakpoint-sm) {
+  .profile-card {
+    border-radius: 16px;
+    min-height: 0;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
   }
 
-  &::part(native) {
+  .profile-image {
+    height: 360px;
+    min-height: 360px;
+  }
+
+  .profile-card-content {
+    padding: 14px 14px 12px;
+  }
+
+  .micro-badges {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: $btn-size;
-    height: $btn-size;
-    min-width: $btn-size;
-    min-height: $btn-size;
-    padding: 0;
+    gap: 6px;
+    margin-bottom: 8px;
 
-    @media (max-width: $breakpoint-sm) {
-      width: $btn-size-sm;
-      height: $btn-size-sm;
-      min-width: $btn-size-sm;
-      min-height: $btn-size-sm;
+    ion-icon {
+      font-size: 15px;
+      color: #818cf8;
+    }
+
+    ion-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #8b77b7;
+      margin-right: 4px;
     }
   }
 
-  ion-icon {
-    font-size: $btn-icon-size;
-    color: $color-muted;
-
-    @media (max-width: $breakpoint-sm) {
-      font-size: $btn-icon-size-sm;
-    }
-  }
-}
-
-.action-bar-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-height: $action-bar-height;
-  margin-left: auto;
-  flex-shrink: 0;
-  min-width: 0;
-
-  @media (max-width: $breakpoint-sm) {
-    gap: 4px;
-    min-height: $action-bar-height-sm;
-  }
-}
-
-.like-her-label {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  min-height: $action-bar-height;
-  flex-shrink: 0;
-  line-height: 1;
-
-  ion-label {
-    font-size: 15px;
-    font-weight: 600;
-    color: $color-text-secondary;
-    line-height: 1;
-    margin: 0;
-    padding: 0;
+  .profile-name ion-label {
+    font-size: 18px;
+    line-height: 1.15;
   }
 
-  @media (max-width: $breakpoint-sm) {
-    min-height: $action-bar-height-sm;
+  .profile-details {
+    margin-bottom: 10px;
 
     ion-label {
       font-size: 13px;
+      line-height: 1.35;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
     }
+  }
+
+  .yesno-grid {
+    display: flex;
   }
 }
 
-.action-bar .btn-yes {
-  --background: #{$color-primary};
-  --color: #{$color-bg};
-  --border-radius: 21px;
-  --padding-start: 16px;
-  --padding-end: 16px;
-  --padding-top: 0;
-  --padding-bottom: 0;
-  --box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
-  height: $btn-size;
-  min-height: $btn-size;
-  margin: 0;
-
-  &::part(native) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: $btn-size;
-    min-height: $btn-size;
-  }
-
-  ion-icon {
-    font-size: $btn-icon-size;
-    color: $color-bg;
-  }
-
-  @media (max-width: $breakpoint-sm) {
-    --padding-start: 12px;
-    --padding-end: 12px;
-    --border-radius: 19px;
-    height: $btn-size-sm;
-    min-height: $btn-size-sm;
-
-    &::part(native) {
-      height: $btn-size-sm;
-      min-height: $btn-size-sm;
-    }
-
-    ion-icon {
-      font-size: $btn-icon-size-sm;
-    }
-  }
+.btn-no-pill::part(native),
+.btn-yes-pill::part(native) {
+  padding: 0 18px;
+  border-style: solid;
 }

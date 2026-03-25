@@ -1,37 +1,23 @@
-<ion-card #cardRef class="profile-card">
-  <ion-img
-    class="profile-image"
-    [src]="profile.image"
-    (click)="onOpen($event)">
+<ion-card class="profile-card">
+  <ion-img #photoRef class="profile-image" [src]="profile.image" (click)="onOpen($event)">
   </ion-img>
   <ion-card-content class="profile-card-content">
+    <ion-row class="micro-badges">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      <ion-label>Verified</ion-label>
+      <ion-icon name="sparkles-outline"></ion-icon>
+      <ion-label>Premium NRI</ion-label>
+    </ion-row>
     <ion-text class="profile-name">
       <ion-label>{{ profile.name }}</ion-label>
     </ion-text>
-    <div class="profile-tags" *ngIf="profileTags.length">
-      <ion-badge class="profile-tag-pill" *ngFor="let tag of profileTags">{{ tag }}</ion-badge>
-    </div>
     <ion-text class="profile-details">
       <ion-label>{{ detailsText }}</ion-label>
     </ion-text>
-    <ion-toolbar class="action-bar">
-      <ion-buttons slot="start">
-        <ion-button fill="outline" class="btn-shortlist" (click)="onShortlist($event)" aria-label="Shortlist">
-          <ion-icon name="star-outline"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-      <ion-buttons slot="end" class="action-bar-right">
-        <ion-text class="like-her-label"><ion-label>Like her?</ion-label></ion-text>
-        <ion-button fill="outline" class="btn-view" (click)="onOpen($event)" aria-label="View profile">
-          <ion-icon name="eye-outline"></ion-icon>
-        </ion-button>
-        <ion-button fill="outline" class="btn-reject" (click)="onReject($event)" aria-label="No">
-          <ion-icon name="close"></ion-icon>
-        </ion-button>
-        <ion-button class="btn-yes" (click)="onLike($event)" aria-label="Yes">
-          <ion-icon name="checkmark"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
+
+    <ion-row class="yesno-grid" aria-label="Actions">
+      <ion-button class="btn-yes-pill" (click)="onOpen($event)">Yes</ion-button>
+      <ion-button class="btn-no-pill" (click)="onReject($event)">No</ion-button>
+    </ion-row>
   </ion-card-content>
 </ion-card>

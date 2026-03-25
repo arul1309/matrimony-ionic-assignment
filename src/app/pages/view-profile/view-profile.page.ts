@@ -1,20 +1,21 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
+  ViewChild,
   ViewEncapsulation,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonicModule, ToastController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 import { ProfileService } from '../../services/profile.service';
-import {
-  Profile,
-  getProfileDetailsLine,
-  getProfileSummaryBullets,
-  getProfileTags,
-} from '../../models/profile.interface';
+import { Profile, getProfileDetailsLine } from '../../models/profile.interface';
 
 export interface InfoRow {
   key: string;
@@ -30,24 +31,46 @@ export interface InfoRow {
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ViewProfilePage implements OnInit {
+export class ViewProfilePage implements OnInit, OnDestroy {
   profile: Profile | null = null;
   currentImageIndex = 0;
-  fullScreenOpen = false;
+
+  @ViewChild('imageScroller') private imageScrollerRef?: ElementRef<HTMLElement>;
+  private mobileScrollRaf = 0;
+  private routeSub?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private profileService: ProfileService,
-    private toast: ToastController
-  ) {}
+    private toast: ToastController,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.profile = this.profileService.getProfileById(id);
-    if (!this.profile) {
-      this.router.navigate(['/pending-profiles']);
-    }
+    this.routeSub = this.route.paramMap
+      .pipe(
+        map((pm) => Number(pm.get('id'))),
+        distinctUntilChanged()
+      )
+      .subscribe((id) => {
+        if (!Number.isFinite(id) || id <= 0) {
+          void this.router.navigate(['/pending-profiles']);
+          return;
+        }
+        this.profileService.seedProfiles();
+        this.profile = this.profileService.getProfileById(id);
+        if (!this.profile) {
+          void this.router.navigate(['/pending-profiles']);
+          return;
+        }
+        this.currentImageIndex = 0;
+        this.cdr.markForCheck();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.routeSub?.unsubscribe();
   }
 
   get profileId(): string {
@@ -64,21 +87,50 @@ export class ViewProfilePage implements OnInit {
         : [];
   }
 
-  get currentImage(): string {
-    const list = this.images;
-    return list[this.currentImageIndex] ?? list[0] ?? '';
+  nextImage(): void {
+    const len = this.images.length;
+    if (len < 2) return;
+    this.currentImageIndex = (this.currentImageIndex + 1) % len;
+    this.cdr.markForCheck();
+    this.syncMobileScrollerToIndex();
+  }
+
+  prevImage(): void {
+    const len = this.images.length;
+    if (len < 2) return;
+    this.currentImageIndex = (this.currentImageIndex - 1 + len) % len;
+    this.cdr.markForCheck();
+    this.syncMobileScrollerToIndex();
+  }
+
+  onMobileImageScroll(): void {
+    if (this.mobileScrollRaf) cancelAnimationFrame(this.mobileScrollRaf);
+    this.mobileScrollRaf = requestAnimationFrame(() => {
+      const el = this.imageScrollerRef?.nativeElement;
+      if (!el) return;
+
+      const width = el.clientWidth;
+      if (!width) return;
+
+      const idx = Math.round(el.scrollLeft / width);
+      const clamped = Math.max(0, Math.min(this.images.length - 1, idx));
+      if (clamped !== this.currentImageIndex) {
+        this.currentImageIndex = clamped;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  private syncMobileScrollerToIndex(): void {
+    const el = this.imageScrollerRef?.nativeElement;
+    if (!el) return;
+    const width = el.clientWidth;
+    if (!width) return;
+    el.scrollTo({ left: this.currentImageIndex * width, behavior: 'smooth' });
   }
 
   get detailsLine(): string {
     return getProfileDetailsLine(this.profile);
-  }
-
-  get summaryBullets(): string {
-    return getProfileSummaryBullets(this.profile);
-  }
-
-  get profileTags(): string[] {
-    return getProfileTags(this.profile);
   }
 
   get locationLine(): string {
@@ -132,56 +184,20 @@ export class ViewProfilePage implements OnInit {
     return rows;
   }
 
-  setImageIndex(i: number): void {
-    if (i >= 0 && i < this.images.length) this.currentImageIndex = i;
-  }
-
-  nextImage(): void {
-    const len = this.images.length;
-    if (len > 0) this.currentImageIndex = (this.currentImageIndex + 1) % len;
-  }
-
-  prevImage(): void {
-    const len = this.images.length;
-    if (len > 0) this.currentImageIndex = (this.currentImageIndex - 1 + len) % len;
-  }
-
-  openFullScreen(): void {
-    this.fullScreenOpen = true;
-  }
-
-  closeFullScreen(): void {
-    this.fullScreenOpen = false;
-  }
-
-  onNavClick(fn: () => void, event: Event): void {
-    event.stopPropagation();
-    fn.call(this);
-  }
-
-  onThumbClick(i: number, event: Event): void {
-    event.stopPropagation();
-    this.setImageIndex(i);
-  }
-
   async onInterest(): Promise<void> {
     if (this.profile) this.profileService.setProfileAction(this.profile.id, 'interested');
     await this.showToastAndGoBack('Interested');
   }
 
-  async onShortlist(): Promise<void> {
-    if (this.profile) this.profileService.setProfileAction(this.profile.id, 'shortlist');
-    await this.showToastAndGoBack('Shortlisted');
-  }
 
-  onIgnore(): void {
+  async onIgnore(): Promise<void> {
     if (this.profile) this.profileService.setProfileAction(this.profile.id, 'reject');
-    this.router.navigate(['/pending-profiles']);
+    await this.showToastAndGoBack('Not Interested');
   }
 
   private async showToastAndGoBack(message: string): Promise<void> {
     const t = await this.toast.create({ message, duration: 2000, position: 'bottom' });
     await t.present();
-    this.router.navigate(['/pending-profiles']);
+    await this.router.navigate(['/pending-profiles']);
   }
 }

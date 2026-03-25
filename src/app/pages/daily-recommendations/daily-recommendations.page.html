@@ -1,0 +1,41 @@
+<ion-header class="daily-header" mode="ios">
+  <ion-toolbar class="daily-toolbar">
+    <ion-buttons slot="start" class="daily-toolbar-start">
+      <ion-back-button
+        defaultHref="/pending-profiles"
+        text=""
+        color="light"
+        aria-label="Back to pending profiles"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-title class="daily-toolbar-title" size="small">Daily Recommendations</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="daily-content" [fullscreen]="true" [scrollY]="false">
+  <div class="stack-wrap" *ngIf="hasCurrentProfile; else emptyState">
+    <div class="stack-stage">
+      <div class="stack-layer stack-layer-back2" aria-hidden="true"></div>
+      <div class="stack-layer stack-layer-back1" aria-hidden="true"></div>
+
+      <div class="card-shell top-card" #topCard>
+        <app-daily-recommendation-card
+          [profile]="currentProfile!"
+          (reject)="reject()"
+          (like)="interested()"
+          (shortlist)="shortlist()"
+        ></app-daily-recommendation-card>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-wrap">
+      <ion-card class="empty-card">
+        <ion-card-content>
+          <ion-label>No more daily recommendations.</ion-label>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </ng-template>
+</ion-content>
